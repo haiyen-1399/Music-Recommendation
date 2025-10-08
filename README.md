@@ -24,7 +24,7 @@ The primary goal of this project was to leverage personal music listening data a
 
 * The system employs **Content-Based Filtering**. Tracks are recommended based on their similarity to the average characteristics (audio features) of music the user has previously enjoyed within a specific time and seasonal context.
 
-**Algorithm: **k-Nearest Neighbors (k-NN)**
+**Algorithm: k-Nearest Neighbors (k-NN)**
 * The NearestNeighbors algorithm from sklearn was used to find similar tracks.
 
 * The prediction logic involves:
