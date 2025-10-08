@@ -1,33 +1,38 @@
-# Project Overview
+# 🎧 Spotify Streaming Analysis and Context-Aware Recommendation System
 
-Objective
+---
 
-- Analyze personal Spotify streaming history and public track metadata to understand listening patterns and generate personalized track recommendations.
+## 📝 Project Overview
 
-Key highlights
+The primary goal of this project was to leverage personal music listening data and external audio feature data to analyze streaming habits and build a context-aware music recommendation system.
 
-- Data sources: personal Spotify streaming exports (`Spotify Extended Streaming History/`) combined with public track CSVs in `Track Data/` for enrichment.
-- Data processing: cleaned and merged streaming events with track metadata (normalize names/IDs, parse timestamps, and compute listening counts and session summaries).
-- Model approach: a lightweight recommendation pipeline combining content-similarity (audio features) with popularity and recency weighting to produce top-N personalized recommendations.
-- Key insights from the analysis:
-	- Listening behavior is concentrated around a small subset of artists and tracks; top 10% of tracks account for a large share of plays.
-	- The model tends to recommend a mix of familiar favorites (high play-count, high popularity) and less-popular but similar tracks (high content similarity) to encourage discovery.
-	- Time-based patterns (weekday vs weekend, hour-of-day) influence short-term recommendations when recency is weighted.
-	- Audio-feature clustering (tempo, energy, danceability) helps surface tracks that match the user's typical listening “mood.”
-	- Evaluation (interactive in the notebook) shows the pipeline balances relevance and novelty; use the notebook cells to view precision/diversity trade-offs on your data.
+### Key Highlights
 
-## Results
+* **Dual Data Integration:** The system integrates two critical data sources: the user's personal streaming history (including duration, skips, etc.) and a public dataset containing detailed audio features (e.g., danceability, energy, valence) for tracks.
 
-- Artifacts produced by the analysis:
-	- Cleaned, merged dataframes of streaming events and enriched track metadata.
-	- Visualizations of listening trends, most-played artists/tracks, and audio-feature distributions.
-	- A ranked set of recommended tracks per user-profile snapshot (top-N lists), produced by the content+popularity pipeline.
-	- Lightweight evaluation outputs (e.g., precision@K, recommendation diversity and novelty summaries) computed in the notebook.
+* **Personalized Analysis:** Clean and analyze individual Spotify streaming history to understand listening habits across different times and seasons.
 
-## Next steps
+* **Content-Based Recommendation:** Implement a Content-Based Filtering system using k-Nearest Neighbors (NearestNeighbors) to suggest novel music.
 
-- Convert the notebook's recommendation pipeline into a small script (`scripts/generate_recs.py`) so recommendations can be generated non-interactively.
-- Add automated unit tests for data-loading and normalization steps to prevent schema regressions when adding new CSVs.
-- Experiment with collaborative filtering or hybrid models (e.g., matrix factorization or factorization machines) to improve personalization.
-- Add a simple web UI or static export (CSV/JSON) for viewing the top-N recommendations and example explanations (why a track was recommended).
+* **Contextualization:** Incorporate engineered features like season and time_of_day to generate recommendations tailored to the user's current listening context.
 
+---
+
+## 📈 Modeling: Content-Based Recommendation
+
+**Modeling Approach: Content-Based Filtering**
+
+* The system employs **Content-Based Filtering**. Tracks are recommended based on their similarity to the average characteristics (audio features) of music the user has previously enjoyed within a specific time and seasonal context.
+
+**Algorithm: **k-Nearest Neighbors (k-NN)**
+* The NearestNeighbors algorithm from sklearn was used to find similar tracks.
+
+* The prediction logic involves:
+
+1. Context Filtering: Isolate historical tracks matching the user's current context (e.g., "Autumn - Morning").
+
+2. Centroid Calculation: Calculate the mean feature vector (centroid) of all audio features for the historically listened tracks in that context.
+
+3. Similarity Search: Use k-NN on the entire library to find the k tracks whose feature vectors are closest to the calculated centroid.
+
+4. Novelty Filter: Apply the rule to exclude tracks by the user's Top 20 artists before presenting the final recommendations.
